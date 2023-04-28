@@ -1,0 +1,275 @@
+\documentclass[12pt,a4paper,scale=1.0]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{scale=0.8}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{physics}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{booktabs}
+\usepackage{extarrows}
+\author{You Li}
+\title{2D-IR simulation: Theory and computational detail}
+\begin{document}
+	\maketitle   % you have to add this command, or you can't print title.
+	\makeatletter
+	\newcommand{\rmnum}[1]{\romannumeral #1}
+	\newcommand{\Rmnum}[1]{\expandafter\@slowromancap\romannumeral #1@}
+	\makeatother %to build Roman number enviroment
+	
+	Two dimensional infrared spectra (2d-IR) is a very powerful spectroscopy method to investigate vibration coupling, spectral diffusion and chemical exchange. To simulate a 2d-IR , we can use QVP (quantum vibrational perturbation) method which can calculate chromophore vibration frequencies quantum-mechanically while other freedom degrees were still simulated by classical Molecular Dynamics. Apparently, QVP method combined both accuracy and efficiency for semi-classical IR line-shape simulation. Besides the QVP program (qvptk) ,we also need to transfer time-dependent frequencies to IR line-shape.  
+	Here, I use c++ to write  2d-IR simulation program, including different separated module and some response calculation choice. The python package can be easily compiled by cython, which provides a good combination of c++ and python. 
+	
+	
+	\section{ Theory of 2d-IR simulation }
+	 Unlike linear IR spectra, 2d-IR have to calculate response function, and then change it from time-domain to frequency-domain. There's different situation we need to discuss.
+	 
+	 \subsection{ Two transmission system for ultrafast three-pulse echo spectrum} \label{sec 1-1 }
+	 
+	 Ultrafast three-pulse echo spectrum is one of third-order nonlinear spectroscoy. The basic formula is \cite{paesani2009infrared}: 
+	 \begin{equation} \label{equ:1-1} 
+	 \begin{aligned} 
+	 I( \omega _1, t_2, \omega _3) = \Re \int_{0}^{\infty} dt_1 \int_{0}^{\infty} dt_3 
+	 [ e^{-i\omega_1 t_1 + i\omega_3 t_3  } R_r(t_3,t_2,t_1) + 
+	 e^{i\omega_1 t_1 +i\omega_3  t_3  } R_{nr}(t_3,t_2,t_1)  ] 
+	 \end{aligned}
+	 \end{equation}
+	 Where $R_r$ and $R_{nr}$ means rephasing and non-rephasing response function:
+	  \begin{equation}  \label{equ:basic}
+	  \begin{aligned}
+	  & R_r(t_3,t_2,t_1) & = R_1(t_3,t_2,t_1)  + R_2(t_3,t_2,t_1) + R_3(t_3,t_2,t_1) \\
+	  & R_{nr}(t_3,t_2,t_1) & = R_4(t_3,t_2,t_1)  + R_5(t_3,t_2,t_1) + R_6(t_3,t_2,t_1)
+	  \end{aligned}
+	  \end{equation}
+	  
+	  Without Condon approximation, we can write $R_i$ as:
+	  \begin{equation}  
+	  \begin{aligned}
+	  R_1(t_3,t_2,t_1) & = R_2(t_3,t_2,t_1) \\
+	  &= \langle \mu_{10}(0)\mu_{10}(t_1)\mu_{10}(t_1 +t_2 )\mu_{10}(t_1 +t_2 + t_3) \phi^{(1)}_{r}(t_3,t_2,t_1) \rangle
+	  \end{aligned}
+	  \end{equation}
+	  
+	  \begin{equation}  
+	  \begin{aligned}
+	  	R_4(t_3,t_2,t_1) & = R_5(t_3,t_2,t_1) \\
+	  	&= \langle \mu_{10}(0)\mu_{10}(t_1)\mu_{10}(t_1 +t_2 )\mu_{10}(t_1 +t_2 + t_3) \phi^{(1)}_{nr}(t_3,t_2,t_1) \rangle
+	  \end{aligned}
+ 	 \end{equation}
+ 	 
+ 	 \begin{equation}  
+ 	 \begin{aligned}
+ 	 R_3(t_3,t_2,t_1) = - \langle \mu_{10}(0)\mu_{10}(t_1)\mu_{21}(t_1 +t_2 )\mu_{21}(t_1 +t_2 + t_3) \phi^{(2)}_{r}(t_3,t_2,t_1) \rangle
+ 	 \end{aligned}
+ 	 \end{equation}
+ 	 
+	  \begin{equation}  
+	 \begin{aligned}
+	 R_6(t_3,t_2,t_1) = - \langle \mu_{10}(0)\mu_{10}(t_1)\mu_{21}(t_1 +t_2 )\mu_{21}(t_1 +t_2 + t_3) \phi^{(2)}_{nr}(t_3,t_2,t_1) \rangle
+	 \end{aligned}
+	 \end{equation}
+	 $\phi$ is called dephasing-induced line broadening factor\cite{doi:10.1063/1.1633549}, but I'd like to call it as  semi-classical frequency fluctuation function:
+	  \begin{equation}  
+	 \begin{aligned}
+	  \phi^{(1)}_{r} = \exp{i\int_{0}^{t_1} d\tau \omega_{10}(\tau) - i\int_{t_1+t_2}^{t_1+t_2+t_3}d\tau \omega_{10}(\tau) }
+	 \end{aligned}
+	 \end{equation}
+	 
+	 \begin{equation}  
+	 \begin{aligned}
+	 \phi^{(1)}_{nr} = \exp{ - i \int_{0}^{t_1} d\tau \omega_{10}(\tau) - i\int_{t_1+t_2}^{t_1+t_2+t_3}d\tau \omega_{10}(\tau) }
+	 \end{aligned}
+	 \end{equation}
+	 
+	 \begin{equation}  
+	 \begin{aligned}
+	 \phi^{(2)}_{r} = \exp{i\int_{0}^{t_1} d\tau \omega_{10}(\tau) - i\int_{t_1+t_2}^{t_1+t_2+t_3}d\tau \omega_{21}(\tau) }
+	 \end{aligned}
+	 \end{equation}
+	 
+	 \begin{equation}  \label{equ:basic-end}
+	 \begin{aligned}
+	 \phi^{(1)}_{nr} = \exp{ - i \int_{0}^{t_1} d\tau \omega_{10}(\tau) - i\int_{t_1+t_2}^{t_1+t_2+t_3}d\tau \omega_{21}(\tau) }
+	 \end{aligned}
+	 \end{equation}
+	 
+	 
+	 
+	 
+	 They all have same interaction time but with different interaction dipole and semi-classical frequency fluctuation function $\phi$. If only one transition permitted, $R_3$ and $R_6$ will disappear. And we often use Condon approximation so that $\mu$ is time-independent.
+	  
+	 
+	 
+	 In cumulant approximation, we can write $R_r$ and $R_{nr}$ as:
+	 
+	 \begin{equation} \label{equ:1-2} 
+	 \begin{aligned} 
+	  R_r(t_3,t_2,t_1) = & 2 | \mu _{10} | ^ 4
+	   e^{i \langle \omega_{10} \rangle (t_1 - t_3 ) -i\omega_3 t_3 + G_1(t_3,t_2,t_1) } \\
+	   & -    | \mu _{10} | ^ 2  | \mu _{21} | ^ 2
+	   e^{i \langle \omega_{10} \rangle t_1 -   i \langle \omega_{21} \rangle t_3
+	   	 -i\omega_3 t_3 + G_2(t_3,t_2,t_1) } 
+	 \end{aligned} 
+	 \end{equation} 
+	 
+	 
+	 \begin{equation} \label{equ:1-3} 
+	 \begin{aligned} 
+	 R_{nr }(t_3,t_2,t_1) = & 2 | \mu _{10} | ^ 4
+	 e^{-i \langle \omega_{10} \rangle (t_1 + t_3 ) -i\omega_3 t_3 + G_3(t_3,t_2,t_1) } \\
+	 & -    | \mu _{10} | ^ 2  | \mu _{21} | ^ 2
+	 e^{-i \langle \omega_{10} \rangle t_1  - \langle \omega_{21} \rangle t_3   + G_4(t_3,t_2,t_1) } 
+	 \end{aligned} 
+	 \end{equation}
+	 
+	 $G_i(t_3,t_2,t_1)$ means different cumulant expansion function. We define the correlation function as:
+	 \begin{equation} \label{equ:1-4} 
+	 c_{ij} ( \tau ) =  \langle \delta \omega_{i}(\tau)  \delta \omega_{j}(0) \rangle  
+	 \end{equation}
+	 and its time average function:
+	 
+	 \begin{equation}\label{equ:1-5} 
+	 g_{ij}(t) = \int_{0}^{t} d\tau_2 \int_{0}^{\tau_2} d\tau_1  c_{ij} ( \tau_1 )
+	 \end{equation}
+	 Where i,j means 10 transition and 21 transition. Then:
+	 \begin{equation}\label{equ:1-6}
+		\begin{aligned}	 
+		G_1 = -g_{11}(t_1) + g_{11}(t_2)        - g_{11}(t_3)
+		-g_{11}(t_1 + t_2) - g_{11}(t_2 + t_3)  + g_{11}(t_1 + t_2 +t_3) \\   
+		G_2 = -g_{11}(t_1) + g_{12}(t_2)        - g_{22}(t_3)
+		-g_{12}(t_1 + t_2) - g_{12}(t_2 + t_3)  + g_{12}(t_1 + t_2 +t_3) \\ 
+		G_3 = -g_{11}(t_1) - g_{11}(t_2)        - g_{11}(t_3)
+		+g_{11}(t_1 + t_2) + g_{11}(t_2 + t_3)  - g_{11}(t_1 + t_2 +t_3) \\
+		G_4 = -g_{11}(t_1) - g_{12}(t_2)        - g_{22}(t_3)
+		+g_{12}(t_1 + t_2) + g_{12}(t_2 + t_3)  - g_{12}(t_1 + t_2 +t_3) 
+		\end{aligned}
+	\end{equation}
+	Equation (\ref{equ:1-6}) has some interesting property. You can find that $G_i$ has same time grid but different sign and time average function g. 
+	
+	For some reason, we will not use cumulant approximation for this program. The cumulant version has the same structure, but it's more difficult to calculate it due to multi G.
+	
+	Population relaxation calculation is  still a tough problem, so I didn't contain the population relaxation effect. There seems no certain phenomenal-adding method, but we may use lifetime-broadening factors in \cite{doi:10.1063/1.1633549}:
+	\begin{equation}\label{equ:population relaxation}
+	\begin{aligned}
+	\Gamma_{\rm{TA}} (t_3,t_2,t_1) & = \exp{- \frac{\gamma_1+\gamma_2}{2} t_3 -
+		\gamma_1 t_2 -   \frac{\gamma_1}{2} t_1  } \\
+	\Gamma_{\rm{SE}} (t_3,t_2,t_1) & = \exp{- \frac{\gamma_1}{2} t_3 -
+		\gamma_1 t_2 -   \frac{\gamma_1}{2} t_1  } \\
+	\Gamma_{\rm{GB}} (t_3,t_2,t_1) & = \exp{- \frac{\gamma_1}{2} t_3 -
+		\gamma_1 t_2 -   \frac{\gamma_1}{2} t_1  } \\
+	\end{aligned}
+	\end{equation}
+	then, we can include population relaxation by multiply $\lambda$ with $R$, while TA for $R_3,R_6$ and SE/GB for others.  
+	
+	\section{Computational detail}
+	\subsection{main structure}
+	The main modules of my program are:
+	\begin{enumerate}
+		\item input class: parameter and transition.
+		\item response function calculation
+		\item Fast Fourier Transformation(FFT)
+	\end{enumerate}
+
+	First of all, you need to offer time-dependent frequencies and some parameters. I made a input class for different transition, including basic information: time-dependent frequencies, transition dipole, and relaxation time $T_1$. All elements are public, so you can change them as simple as normal variable. 
+	
+	After reading part, we also need a unit transformation for energy(frequency) and time-step.  Default time unit is ps and energy is wavenumber. In program, only dt and relaxation time is real time unit while other time variable will be  time-normalization unit: $ t = n * \Delta t\rightarrow t=n$ . In that unit system, we only need to use integer number to describe time. 
+	
+	Then, we can calculate our response function i.e. $R_r$ and $R_{nr}$. Different approximation may be used. Before that, we shall choose a ensemble average method, normally time average metho If we choose Fourier transformation integral area as rectangle, maximum time step of each time average will be $ ( N-(t_{\text{max}}*2 - t_2) ) $. 
+	
+	\subsection{non-Condon }
+	
+	
+	  In this case, we have to use the original formula from \ref{equ:basic} to \ref{equ:basic-end}. We can 
+	write them in discrete format. For example \ref{equ:basic}:
+	\begin{equation}  
+	\begin{aligned}
+	R_1 (t_3,t_1;t_2) = & \sum_{k=0}^{np} \mu_{10}(k*t_{gap})  \mu_{10}(k*t_{gap}+t_1) \mu_{10}(k*t_{gap}+t_1+t_2) \mu_{10}(k*t_{gap}+t_1+t_2+t_3) \\
+	&*  \exp(i [ \sum_{\tau=k*t_{gap}}^{t_1 + k*t_{gap}} \omega(\tau) -  
+	\sum_{\tau=k*t_{gap} +t_1 +t_2  }^{t_1 +t_2 +t_3 + k*t_{gap}} \omega(\tau)  ])
+	\end{aligned}
+	\end{equation}
+	
+	As usual, I will save the response function as two-dimension matrix. You can find that exponential part is most time-cost, but we can calculate it skillfully. If we denote the first term in exp as $F(t_1,k)$ and second's as $G(t_1,t_3,k)$, we can find:
+	\begin{enumerate}
+		\item $F(t_1,k)$ is independent of $t_3$. We just need to update it when $t_1$ change.
+		\item $G(t_1,t_3,k)$ becomes 0 when $t_3=0$, and can be calculate iteratively when $t_1$ fixed.
+		\item $\phi^{(i)}_{r}$,$\phi^{(i)}_{nr}$ only have difference in sign of F,G.
+		\item $\phi^{(i)}_{r}$,$\phi^{(j)}_{r}$ or $\phi^{(i)}_{nr}$,$\phi^{(j)}_{nr}$  only have difference in G.
+	\end{enumerate}
+
+	Inspired by information above, we can fixed $t_1$ and cycle $t_3$ first. Then calculate F,G in every total cycle. Be mention that F,G are just dependent in k and update with correlated time. And response function becomes:
+	\begin{equation}  
+	\begin{aligned}
+	R_{r} (t_3,t_1;t_2)  = \sum_{k=0}^{np} \{ &  2*R_1(t_3,t_1,k;t_2) + R_3(t_3,t_1,k;t_2) \} \\
+	 = \sum_{k=0}^{np} \{ 2* & \mu_{10} \exp{i F(t_1,k) - i G_{10}(t_3,t_1,k) }  \\
+	 -  & \mu_{21} \exp{i F(t_1,k) - i G_{21}(t_3,t_1,k) }   \}
+		\end{aligned}
+	\end{equation}
+	\begin{equation}  
+	\begin{aligned}
+	R_{nr} (t_3,t_1;t_2)  = \sum_{k=0}^{np} \{ & 2*R_4(t_3,t_1,k;t_2) + R_6(t_3,t_1,k;t_2) \} \\
+	 = \sum_{k=0}^{np} \{ 2*& \mu_{10} \exp{-i F(t_1,k) - i G_{10}(t_3,t_1,k) }  \\
+	 - & \mu_{21}  \exp{-i F(t_1,k) - i G_{21}(t_3,t_1,k) }   \}
+	\end{aligned}
+	\end{equation}
+		 
+	
+
+ 	
+ 	\subsection{Ensemble}
+ 	For multiple trajectory, we can use normal ensemble method that simply add their response function together. But most former case could only calculate one MD. So we have to use time-average ensemble.
+ 	I once had a wrong understanding of time average. At that time, I regard configuration far away each other in MD as time-independent start point of trajectory. When I read some MD textbook, I found that's wrong. Time-average is just an ensemble method based on ergodicity assumption. All statistic property has their time-average value:
+	\begin{equation}\label{equ:3-1}
+	\begin{aligned}
+	\langle \hat A \rangle \xlongrightarrow{ \text{In ergodicity assumption} } \frac{1}{t_n-t_0} \int_{t_0}^{t_n} A(t) dt
+	 	\end{aligned}
+	\end{equation}
+	In  numerical calculation, we can freely change integral boundary and interval to save our time:
+		\begin{equation}\label{equ:3-2}
+	\begin{aligned}
+	 \frac{1}{t_n-t_0} \int_{t_0}^{t_n} A(t) dt = 
+	 \frac{1}{n} \sum_{i=0}^{n} A(i*\Delta t)  
+	\end{aligned}
+	\end{equation}
+	If we use relatively  small $n$ to reduce integral calculation, the response function may contain more noise. In \cite{hamm_zanni_2011} , for water 2d IR calculation, they only use 40 fs as time average interval! We have use much small integral interval before!
+	
+	\subsection{FFTW}
+	It's really time-costing to use Direct Fourier Integral (DFI) to do Fourier transformation. Fast Fourier transformation could be done by C++ FFTW package. It should be noted this two method is not identical  in result. The FFT is a fast transformation algorithm for Discrete Fourier transformation (DFT). 1d time-domain to frequency-domain DFT can be written as:
+	
+ 	\begin{equation}\label{equ:4-1}
+ 	\begin{aligned}
+ 	f(\omega_n) = \frac{\Delta t}{\sqrt{2\pi}} \sum_{k=0}^{N-1} f(t_k) \exp( \frac{2\pi ikn}{N})
+ 	\end{aligned}
+ 	\end{equation}
+ 	where $f(t_k)$ and $f(\omega_n)$ is time-domain function and frequency-domain function respectively, $\Delta t$ is time interval of discrete data and $N$ is total number of discrete data.  Output grid $\omega_n$ obeys:
+ 	\begin{equation}\label{equ:4-2}
+ 	\omega_n = \frac{2\pi n}{N\Delta t}
+ 	\end{equation}
+ 	
+ 	There's some important property of ${\omega_n}$. First, the maximum frequency is depended on $\Delta t$:
+ 	\begin{equation}\label{equ:4-3}
+ 	\omega_N= \frac{2\pi}{2\Delta t}
+ 	\end{equation}
+ 	which is called the Nyquist critical frequency. second frequency resolution is depended on total time:
+ 	\begin{equation}\label{equ:4-4}
+ 	\Delta \omega_n = \frac{2\pi}{N\Delta t}
+ 	\end{equation}
+ 	This means, if we want to increase our frequency resolution, we need enlarge our time region
+ 	This transformation could remain some important property of Fourier transformation
+ 	
+ 	There are many useful method to improve FFT efficiency and accuracy, such as zero-padding and trapezoidal rule (see section 9 in\cite{hamm_zanni_2011})
+	
+	
+	
+	\section{question}
+
+	
+ 	\bibliographystyle{JAmChemSoc}
+	\bibliography{ref}
+	
+
+	
+\end{document}

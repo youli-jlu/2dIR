@@ -1,0 +1,74 @@
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{}
+\providecommand{\foreignlanguage}[2]{#2}
+\providecommand{\Capitalize}[1]{\uppercase{#1}}
+\providecommand{\capitalize}[1]{\expandafter\Capitalize#1}
+\providecommand{\bibliographycite}[1]{\cite{#1}}
+\providecommand{\bbland}{and}
+\providecommand{\bblchap}{chap.}
+\providecommand{\bblchapter}{chapter}
+\providecommand{\bbletal}{et~al.}
+\providecommand{\bbleditors}{editors}
+\providecommand{\bbleds}{eds.}
+\providecommand{\bbleditor}{editor}
+\providecommand{\bbled}{ed.}
+\providecommand{\bbledition}{edition}
+\providecommand{\bbledn}{ed.}
+\providecommand{\bbleidp}{page}
+\providecommand{\bbleidpp}{pages}
+\providecommand{\bblerratum}{erratum}
+\providecommand{\bblin}{in}
+\providecommand{\bblmthesis}{Master's thesis}
+\providecommand{\bblno}{no.}
+\providecommand{\bblnumber}{number}
+\providecommand{\bblof}{of}
+\providecommand{\bblpage}{page}
+\providecommand{\bblpages}{pages}
+\providecommand{\bblp}{p}
+\providecommand{\bblphdthesis}{Ph.D. thesis}
+\providecommand{\bblpp}{pp}
+\providecommand{\bbltechrep}{Tech. Rep.}
+\providecommand{\bbltechreport}{Technical Report}
+\providecommand{\bblvolume}{volume}
+\providecommand{\bblvol}{Vol.}
+\providecommand{\bbljan}{January}
+\providecommand{\bblfeb}{February}
+\providecommand{\bblmar}{March}
+\providecommand{\bblapr}{April}
+\providecommand{\bblmay}{May}
+\providecommand{\bbljun}{June}
+\providecommand{\bbljul}{July}
+\providecommand{\bblaug}{August}
+\providecommand{\bblsep}{September}
+\providecommand{\bbloct}{October}
+\providecommand{\bblnov}{November}
+\providecommand{\bbldec}{December}
+\providecommand{\bblfirst}{First}
+\providecommand{\bblfirsto}{1st}
+\providecommand{\bblsecond}{Second}
+\providecommand{\bblsecondo}{2nd}
+\providecommand{\bblthird}{Third}
+\providecommand{\bblthirdo}{3rd}
+\providecommand{\bblfourth}{Fourth}
+\providecommand{\bblfourtho}{4th}
+\providecommand{\bblfifth}{Fifth}
+\providecommand{\bblfiftho}{5th}
+\providecommand{\bblst}{st}
+\providecommand{\bblnd}{nd}
+\providecommand{\bblrd}{rd}
+\providecommand{\bblth}{th}
+\begin{thebibliography}{1}
+
+\bibitem{paesani2009infrared}
+Paesani, F.; Xantheas, S.~S.; Voth, G.~A. \emph{The Journal of Physical
+  Chemistry B} \textbf{2009}, \emph{113}, 13118--13130.
+
+\bibitem{doi:10.1063/1.1633549}
+Kwac, K.; Lee, H.; Cho, M. \emph{The Journal of Chemical Physics}
+  \textbf{2004}, \emph{120}, 1477--1490.
+
+\bibitem{hamm_zanni_2011}
+Hamm, P.; Zanni, M. \emph{Concepts and Methods of 2D Infrared Spectroscopy};
+  Cambridge University Press, 2011.
+
+\end{thebibliography}

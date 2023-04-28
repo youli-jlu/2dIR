@@ -1,0 +1,25 @@
+CXX=g++  
+##CCFLAG= -O3 -Wall -Wextra -Werror --std=c++11
+CCFLAG= -O3 -Wall  --std=c++14
+LDFLAG= -lfftw3 -lfftw3f -lm 
+
+main1d.x: main1d.cc 1dIR.o  class.o response1d.o dft.o # class.o
+	$(CXX) main1d.cc -o main1d.x $(CCFLAG) class.o 1dIR.o response1d.o dft.o $(LDFLAG)
+
+1dIR.o: 1dIR.cc 
+	$(CXX) -c $(CCFLAG) 1dIR.cc 
+
+dft.o: dft.cc 
+	$(CXX) -c $(CCFLAG) dft.cc 
+
+response1d.o: response1d.cc #class.o
+	$(CXX) -c $(CCFLAG) response1d.cc #class.o
+
+class.o: class.cc
+	$(CXX) -c $(CCFLAG) class.cc
+	
+
+.PHONY: clean all
+
+clean:
+	rm -f *.o *.x
