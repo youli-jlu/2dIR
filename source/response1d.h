@@ -23,12 +23,13 @@ class response1d
     complex<double> *R_r=nullptr;
 
     virtual void initial() ;
-    void printr(string);
+    void printr();
     complex<double>  &r(int) ;
     void zero_padding1d(complex<double>*&,int);
     void zero_padding();
     void initial_value();
     void trans_mean();
+    double td10(int,int); //calculate mu(t+t0)*mu(t0)
     virtual void calculation()=0 ;
 };
 
@@ -48,7 +49,6 @@ class non_condon1d:public response1d
     ~non_condon1d() { };
     void calculation();
     double gamma(int);
-    double td10(int,int);
 };
 class cummulant1d:public response1d
 {

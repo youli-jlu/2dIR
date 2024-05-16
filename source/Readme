@@ -15,7 +15,7 @@ freqfile: specify frequency file.
 tdfile: specify transition
 spectrafile: specify output spectra file.
 3.parameter for 1d spectra:
-dt:time interval of frequency and transition dipole. defualt unit:fs
+dt:time interval of frequency and transition dipole. default unit:fs
 readgap: read gap of freq and td.
 dt_time_average: time interval in time average calculation.
 Note: to use ensemble average with multiple trajectory , simply add them end to first, 
@@ -23,17 +23,17 @@ Note: to use ensemble average with multiple trajectory , simply add them end to 
 zeropodding: specify how many zero-padding time. 
       You can get better frequency resolution by increasing it. 
 maxfreq/minfreq: max or min value of output spectra.
-trans1relaxation: relaxation time of transition1. defualt unit:ps
+trans1relaxation: relaxation time of transition1. default unit:fs ( so that response relax as exp(-t/T1) )
 4.parameter for 2d spectra:
 all parameter in 1d, and:
-t2: waiting time in 2d spectra.
+t2: waiting time in 2d spectra. default unit: dt
 trans2relaxation: relaxation time of transition2.
 
 
 
 Input format:
 frequencies and transition dipole(polarizability) are main material. 
-Standard format can be referred to "freq-hod.dat" and "td.dat".
+Standard format can be referred to "freq-hod.dat" and "td*.dat".
 Other parameter especially response time should chosen specifically.
 Tips: you can plot response function. Let response time longer than convergence boundary.
 

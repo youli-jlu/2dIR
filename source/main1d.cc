@@ -32,7 +32,7 @@ int main()
   parafile >> parameter.spectraflag;
   parafile >> parameter.freqfile;       //frequency filename
   parafile >> parameter.spectrafile;       //frequency filename
-  parafile >> parameter.tdfile;       //transitionn dipole filename
+  parafile >> parameter.tdfile1;       //transitionn dipole filename
   parafile >> parameter.dimension;       //frequency dimension
   parafile >> parameter.dt;       //time interval between adjacent step
   parafile >> parameter.rtgap;      // read gap

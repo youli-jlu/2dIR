@@ -25,10 +25,13 @@ class response2d
     complex<double> *R_nr=nullptr;
 
     virtual void initial() ;
-    void printr(string);
-    void printnr(string);
+    void printr();
+    //void printnr(string);
     complex<double>  &r(int,int) ;
     complex<double> &nr(int,int) ;
+    double td10_t(int,int,int);
+    double td21_t(int,int,int);
+    //some frequency method 
     void zero_padding1d(complex<double>*&,int);
     void trans_mean();
     void zero_padding() ;
@@ -54,8 +57,6 @@ class non_condon2d:public response2d
     void calculation();
     double gamma_TA(int,int);
     double gamma_SE(int,int);
-    double td10(int,int,int);
-    double td21(int,int,int);
 };
 class cummulant2d:public response2d
 {

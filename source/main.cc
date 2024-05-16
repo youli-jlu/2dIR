@@ -33,7 +33,8 @@ int main()
   parafile >> parameter.spectraflag;
   parafile >> parameter.freqfile;       //frequency filename
   parafile >> parameter.spectrafile;       //frequency filename
-  parafile >> parameter.tdfile;       //transitionn dipole filename
+  parafile >> parameter.tdfile1;       //transitionn dipole filename
+  parafile >> parameter.tdfile2;       //transitionn dipole filename
   parafile >> parameter.dimension;       //frequency dimension
   parafile >> parameter.t2;       // t2 time in 2d-IR simulation
   parafile >> parameter.dt;       //time interval between adjacent step

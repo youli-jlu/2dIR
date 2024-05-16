@@ -1,0 +1,8 @@
+setup.py
+setup2whl.py
+./spectra2d.cpp
+buildtest/spectra2d.cpp
+spectra2d.egg-info/PKG-INFO
+spectra2d.egg-info/SOURCES.txt
+spectra2d.egg-info/dependency_links.txt
+spectra2d.egg-info/top_level.txt
