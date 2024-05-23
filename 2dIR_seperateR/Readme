@@ -1,0 +1,57 @@
+spectra calculation program written in c++ and python/cython.
+simply "pip install spectra2d-..." to install package into your python environment.
+Note: This program need fftw environment. Make sure you have already installed dynamic fftw package .
+basic operation can be referred to "test.py"
+
+kwargs for basic parameter:
+1.spectra method:
+dimension: int(1) for linear spectra and int(2) for 2d spectra
+response: specify response function calculation  "condon","non-condon","cumulant"
+          if "cumulant", calculate  frequency correlation function, too.
+Note: cumulant method was suggested for calculation efficiency and spectra smoothness.
+Note: the b synbol before string transfer string type to bytes.
+2.I/O file:
+freqfile: specify frequency file.
+tdfile: specify transition
+spectrafile: specify output spectra file.
+3.parameter for 1d spectra:
+dt:time interval of frequency and transition dipole. default unit:fs
+readgap: read gap of freq and td.
+dt_time_average: time interval in time average calculation.
+Note: to use ensemble average with multiple trajectory , simply add them end to first, 
+      and set dt_time_average to total time of each trajectory (total time should be the same).
+zeropadding: specify how many zero-padding time. 
+      You can get better frequency resolution by increasing it. 
+maxfreq/minfreq: max or min value of output spectra, where the mean value of freq1 is in 0.0.
+trans1relaxation: relaxation time of transition1. default unit:fs ( so that response relax as exp(-t/T1) )
+4.parameter for 2d spectra:
+all parameter in 1d, and:
+t2: waiting time in 2d spectra. default unit: dt
+trans2relaxation: relaxation time of transition2.
+
+
+
+Input format:
+frequencies and transition dipole(polarizability) are main material. 
+Standard format can be referred to "freq-hod.dat" and "td.dat".
+Other parameter especially response time should chosen specifically.
+Tips: you can plot response function. Let response time longer than convergence boundary.
+
+Output:
+1.response function:
+For linear spectra, response function will be saved in "1dresponse" file.
+For 2d spectra, rephasing and non-resphasing response will be saved in "rephasing" and "non-rephasing" file.
+2.spectra:
+Only real part of Fourier transformation will be saved.
+If 2d spectra, save  rephasing and non-rephasing separately.
+
+
+
+FOR DEVELOPER:
+To add other attribute or class in python , you can modify spectra2d.pyx 
+To call other c++ module, you can change  IR2d.pxd and also spectra2d.pyx
+simply "./2whl.sh", you can build your python package.
+then "pip install /dist/spectra..." to install it.
+
+If you are satisfied to pure c++ , 
+Makefile1d/2d can build 1d and 2d version separately.
