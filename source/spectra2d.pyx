@@ -29,7 +29,7 @@ class pyspectra:
         self.t2          =int(kwargs.get("t2",0))
         self.rtgap       =int(kwargs.get("readgap",1))
         self.tgap        =int(kwargs.get("dt_time_average",10))
-        self.nzp         =int(kwargs.get("zeropodding",0))
+        self.nzp         =int(kwargs.get("zeropadding",0))
         self.tmax        =int(kwargs.get("response_tmax",0))
         self.dt          =float(kwargs.get("dt",0.01))
         self.omega_max   =float(kwargs.get("maxfreq",0))
