@@ -15,7 +15,8 @@ class transition
 {
   public:
     vector< double > freq;
-    vector<double> tdx,tdy,tdz;
+    vector<double> td_k,td_l,td_m;
+    vector<double> tp_ij;
     double T1;
     double freq_mean;
     double real_mean_omega; //real mean frequency 
@@ -44,6 +45,8 @@ class para
     string freqfile;
     string tdfile1;
     string tdfile2;
+    string tpfile1;
+    string tpfile2;
     string spectrafile1;
     string spectrafile2;
     string responsefile;

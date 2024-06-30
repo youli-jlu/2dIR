@@ -1,7 +1,8 @@
 spectra calculation program written in c++ and python/cython.
-simply "pip install spectra2d-..." to install package into your python environment.
+simply "pip install spectra2dSFG-..." to install package into your python environment.
 Note: This program need fftw environment. Make sure you have already installed dynamic fftw package .
 basic operation can be referred to "test.py"
+
 
 kwargs for basic parameter:
 1.spectra method:
@@ -12,8 +13,9 @@ Note: cumulant method was suggested for calculation efficiency and spectra smoot
 Note: the b synbol before string transfer string type to bytes.
 2.I/O file:
 freqfile: specify frequency file.
-tdfile: specify transition
-spectrafile: specify output spectra file.
+tdfile: specify transition dipole in given direction k,l,m
+tdfile: specify transition polarizability in given direction ij
+spectrafile: specify the name of output spectra file.
 3.parameter for 1d spectra:
 dt:time interval of frequency and transition dipole. default unit:fs
 readgap: read gap of freq and td.
@@ -49,7 +51,7 @@ If 2d spectra, save  rephasing and non-rephasing separately.
 
 FOR DEVELOPER:
 To add other attribute or class in python , you can modify spectra2d.pyx 
-To call other c++ module, you can change  IR2d.pxd and also spectra2d.pyx
+To call other c++ module, you can change  SFG2d.pxd and also spectra2d.pyx
 simply "./2whl.sh", you can build your python package.
 then "pip install /dist/spectra..." to install it.
 

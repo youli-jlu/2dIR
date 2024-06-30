@@ -33,9 +33,7 @@ complex<double> & response1d::r(int t1)
 }
 
 double response1d::td10(int t1,int tk) { 
-  return trans1.tdx[tk]*trans1.tdx[tk+t1] 
-    +trans1.tdy[tk]*trans1.tdy[tk+t1]
-    +trans1.tdz[tk]*trans1.tdz[tk+t1]
+  return trans1.td_k[tk]*trans1.tp_ij[tk+t1] 
     ;}
 
 //void response1d::printr(string filename)

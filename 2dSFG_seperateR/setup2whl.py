@@ -9,17 +9,16 @@ extra_compile_args = ['-O3', '-std=c++14']
 extra_link_args = ['-O3', '-std=c++14']
 
 ext = Extension(
-        #"spectra1d",
-        #["spectra1d.pyx",],
-        "spectra2d",
-        ["spectra2d.pyx",],
+        "spectra2dSFG",
+        ["spectra2dSFG.pyx",],
+        include_dirs = ["./"],
         libraries=libraries,
         extra_compile_args=extra_compile_args,
         extra_link_args=extra_link_args,
         )
 
-setup(name="spectra2d",
-        version="3.5",
+setup(name="spectra2dSFG",
+        version="0.1",
         ext_modules=cythonize(
             [ext,],
             build_dir="buildtest",

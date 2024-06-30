@@ -54,15 +54,12 @@ complex<double> & response2d::nr2(int t1,int t3)
 
 //calculate td part
 double response2d::td10_t(int t1,int t3,int tk) { 
-  return trans1.tdx[tk]*trans1.tdx[tk+t1]*trans1.tdx[tk+t1+parameter.t2]*trans1.tdx[tk+t1+parameter.t2+t3]
-   +trans1.tdy[tk]*trans1.tdy[tk+t1]*trans1.tdy[tk+t1+parameter.t2]*trans1.tdy[tk+t1+parameter.t2+t3] 
-   +trans1.tdz[tk]*trans1.tdz[tk+t1]*trans1.tdz[tk+t1+parameter.t2]*trans1.tdz[tk+t1+parameter.t2+t3] 
+  return trans1.td_m[tk]*trans1.td_l[tk+t1]*trans1.td_k[tk+t1+parameter.t2]*trans1.tp_ij[tk+t1+parameter.t2+t3]
     ;}
 double response2d::td21_t(int t1,int t3,int tk) { 
-  return trans1.tdx[tk]*trans1.tdx[tk+t1]*trans2.tdx[tk+t1+parameter.t2]*trans2.tdx[tk+t1+parameter.t2+t3]
-    + trans1.tdy[tk]*trans1.tdy[tk+t1]*trans2.tdy[tk+t1+parameter.t2]*trans2.tdy[tk+t1+parameter.t2+t3]
-    + trans1.tdz[tk]*trans1.tdz[tk+t1]*trans2.tdz[tk+t1+parameter.t2]*trans2.tdz[tk+t1+parameter.t2+t3]
+  return trans1.td_m[tk]*trans1.td_l[tk+t1]*trans2.td_k[tk+t1+parameter.t2]*trans2.tp_ij[tk+t1+parameter.t2+t3]
     ;}
+
 void response2d::printr()
 {
   ofstream outfile(parameter.responsefile,ios::out);

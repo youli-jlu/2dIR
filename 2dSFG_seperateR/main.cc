@@ -8,7 +8,7 @@
 #include <math.h>
 #include <algorithm>
 #include "class.h"  // transition and parameter determination
-#include "2dIR.h"
+#include "2dSFG.h"
 
 using namespace std;
 
