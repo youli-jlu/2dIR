@@ -264,9 +264,29 @@
 	
 	
 	
-	\section{question}
-
-	
+	\section{New update for Sum-Frequency-Generation (SFG) spectra calculation}
+	The SFG spectra can also be calculated via the semi-classical line-shape theory, and the formula of SFG are very similar to those of IR. 
+	The 4-order response of the corresponding system can be written as\cite{Kraack2017}:
+	\begin{equation}
+		R^{(4), i j k l m}\left(t_4, t_3, t_2, t_1\right)=R^{(3), i j k l m}\left(t_3, t_2, t_1\right) , \delta\left(t_4\right)
+	\end{equation}
+	where we use $\delta (t_4)$ to approximate the ultra-fast
+	response that casaused by the intraction between the nonresonant visible (VIS) light  and the nonresonant (virtual) state of system. 
+	Then, the remaining 3-order response functions will be:
+	\begin{equation}
+		\begin{aligned}
+			R_1^{i j k l m}=R_2^{i j k l m}= & \left\langle\alpha_{10}^{i j}\left(t_1+t_2+t_3\right) \mu_{10}^k\left(t_1+t_2\right) \mu_{10}^l\left(t_1\right) \mu_{10}^m(0)\right. \\
+			& \left.\times \exp \left[-i \int_{t_1+t_2}^{t_1+t_2} d \tau \omega_{10}(\tau)\right] \exp \left[i \int_0^{t_1} d \tau \omega_{10}(\tau)\right]\right\rangle \\
+			R_3^{i j k l m}= & -\left\langle\alpha_{21}^{i j}\left(t_1+t_2+t_3\right) \mu_{21}^k\left(t_1+t_2\right) \mu_{10}^l\left(t_1\right) \mu_{10}^m(0)\right. \\
+			& \left.\times \exp \left[-i \int_{t_1+t_2}^{t_1+t_2+t_3} d \tau \omega_{21}(\tau)\right] \exp \left[i \int_0^{t_1} d \tau \omega_{10}(\tau)\right]\right\rangle \\
+			R_4^{i j k l m}=R_5^{i j k l m}= & \left\langle\alpha_{10}^{i j}\left(t_1+t_2+t_3\right) \mu_{10}^k\left(t_1+t_2\right) \mu_{10}^l\left(t_1\right) \mu_{10}^m(0)\right. \\
+			& \left.\times \exp \left[-i \int_{t_1+t_2}^{t_1+t_2+t_3} d \tau \omega_{10}(\tau)\right] \exp \left[-i \int_0^{t_1} d \tau \omega_{10}(\tau)\right]\right\rangle \\
+			& \left.\times \exp \left[-i \int_{t_1+t_2}^{t_1+t_2+t_3} d \tau \omega_{21}(\tau)\right] \exp \left[-i \int_0^{t_1} d \tau \omega_{10}(\tau)\right]\right\rangle \\
+			R_6^{i j k l m}= & -\left\langle\alpha_{21}^{i j}\left(t_1+t_2+t_3\right) \mu_{21}^k\left(t_1+t_2\right) \mu_{10}^l\left(t_1\right) \mu_{10}^m(0)\right.
+		\end{aligned}
+	\end{equation}
+	It is easy to find that, for the 2d-SFG calculation, we only need to change the trainsition dipole $\mu_{10}(t_1 +t_2 + t_3)$ (or $\mu_{21}(t_1 +t_2 + t_3)$)  to the corresponding trainsition polarizability $\alpha_{10}(t_1 +t_2 + t_3)$ (or $\alpha_{21}(t_1 +t_2 + t_3)$)  in a 2d-IR spectra program.
+	And this is the relation between my IR program and SFG program.
  	\bibliographystyle{JAmChemSoc}
 	\bibliography{ref}
 	
